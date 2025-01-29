@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Include Shaka Player from a CDN -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/shaka-player/4.12.8/shaka-player.ui.js"></script> -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/shaka-player.compiled.debug.min.js"
+      integrity="sha512-OMtkz3+rKoMVfpCFmlRGzpUT+xPG/zl8vXTogYclD7z15zrHOGsIyGnMpZkuwSFY2Mv73CL2aunkERBzmSxoqA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://github.com/videojs/mux.js/releases/latest/download/mux.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://ajax.googleapis.com/ajax/libs/shaka-player/4.12.8/controls.css"
+    />
+  </head>
+  <body>
+    <audio id="audio" controls autoplay></audio>
+    <script>
+      // https://shaka-player-demo.appspot.com/docs/api/tutorial-offline.html
+      shaka.polyfill.installAll();
+      const audioHTMLElement = document.getElementById("audio");
+
+      if (!shaka.Player.isBrowserSupported()) {
+        alert("Browser not supported!");
+      } else {
+        initPlayer(audioHTMLElement, "./audio_master.m3u8");
+      }
+
+      function onErrorEvent(event) {
+        // Extract the shaka.util.Error object from the event.
+        alert(event.detail);
+        console.error(event.error);
+      }
+
+      function onError(err) {
+        // Extract the shaka.util.Error object from the event.
+        alert(err.message);
+        console.error(err);
+      }
+
+      async function initPlayer(audioElement, manifestUri) {
+        const player = new shaka.Player();
+        debugger;
+        player.addEventListener("error", onErrorEvent);
+        await player.attach(audioElement);
+        player.configure({
+          enableAdaptation: true,
+          drm: {
+            servers: {
+              "com.widevine.alpha":
+                "https://cwip-shaka-proxy.appspot.com/no_auth", // "https://proxy.uat.widevine.com/proxy",
+            },
+          },
+        });
+        debugger;
+        try {
+          await player.load(manifestUri);
+          const tracks = player.getVariantTracks();
+          debugger;
+          // This runs if the asynchronous load is successful.
+          console.log("The video has now been loaded!");
+        } catch (e) {
+          // onError is executed if the asynchronous load fails.
+          onError(e);
+        }
+      }
+    </script>
+  </body>
+</html>
