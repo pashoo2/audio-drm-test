@@ -48,10 +48,15 @@
 
         // https://github.com/shaka-project/shaka-player/issues/4890
         player.configure({
-          enableAdaptation: true,
-          useNativeHlsOnSafari: true,
-          "preferNativeHls": true,
-
+          "streaming": {
+            enableAdaptation: true,
+            useNativeHlsOnSafari: true,
+            "preferNativeHls": true,
+          },
+          "abr": {
+            "enabled": true,
+            "useNetworkInformation": true,
+          },
           drm: {
             servers: {
               "com.apple.fps": "https://lic.drmtoday.com/license-server-fairplay",
