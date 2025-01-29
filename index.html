@@ -19,6 +19,7 @@
     <audio id="audio" controls autoplay></audio>
     <script>
       // https://shaka-player-demo.appspot.com/docs/api/tutorial-offline.html
+      // TODO - shaka fails playing content on Android 5.1.1 with 3014 Error code https://github.com/shaka-project/shaka-player/issues/6334
       shaka.polyfill.installAll();
       const audioHTMLElement = document.getElementById("audio");
 
@@ -51,6 +52,7 @@
           "streaming": {
             useNativeHlsOnSafari: true,
             "preferNativeHls": true,
+            "forceTransmuxTS": false,
           },
           "abr": {
             "enabled": true,
