@@ -45,13 +45,32 @@
         debugger;
         player.addEventListener("error", onErrorEvent);
         await player.attach(audioElement);
+
+        // https://github.com/shaka-project/shaka-player/issues/4890
         player.configure({
           enableAdaptation: true,
+          useNativeHlsOnSafari: true,
+          "preferNativeHls": true,
+
           drm: {
             servers: {
-              "com.widevine.alpha":
-                "https://cwip-shaka-proxy.appspot.com/no_auth", // "https://proxy.uat.widevine.com/proxy",
+              "com.apple.fps": "https://lic.drmtoday.com/license-server-fairplay",
+              "com.widevine.alpha": "https://lic.drmtoday.com/license-proxy-widevine/cenc/?specConform=true"
+              //"https://cwip-shaka-proxy.appspot.com/no_auth", 
+              // // "https://proxy.uat.widevine.com/proxy",
             },
+            "advanced": {
+              "com.apple.fps": {
+                "distinctiveIdentifierRequired": false,
+                "persistentStateRequired": false,
+                "videoRobustness": "",
+                "audioRobustness": "",
+                "sessionType": "",
+                "serverCertificate": {},
+                "serverCertificateUri": "https://lic.drmtoday.com/license-server-fairplay/cert/tvm1",
+                "individualizationServer": ""
+              }
+            }
           },
         });
         debugger;
